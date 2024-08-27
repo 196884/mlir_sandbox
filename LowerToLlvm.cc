@@ -23,7 +23,8 @@ struct ConstantOpLowering : public mlir::OpRewritePattern<ConstantOp>
         if (mlir::IntegerAttr iAttr = mlir::dyn_cast<mlir::IntegerAttr>(a_op.getValue()))
         {
             const auto width = a_op.getType().getIntOrFloatBitWidth();
-            mlir::Value newOp = a_rewriter.create<mlir::arith::ConstantOp>(a_op.getLoc(), a_rewriter.getIntegerType(width), iAttr);
+            const mlir::Type newType = a_rewriter.getIntegerType(width);
+            mlir::Value newOp = a_rewriter.create<mlir::arith::ConstantOp>(a_op.getLoc(), newType, a_rewriter.getIntegerAttr(newType, iAttr.getUInt()));
             //a_rewriter.replaceOp(a_op, newOp);
             a_rewriter.replaceAllUsesWith(a_op, newOp);
             return success();
